@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if [ -z "$1" ]
+then
+    echo "Missing prompt"
+else
+    ps aux | grep fstrim | grep -v grep
+
+    prompt="$1"
+
+    echo -n $prompt " "
+    read ans
+
+    if [ $ans = "y" ]
+    then
+        shift
+        eval $@
+    fi
+fi
+
+
+exit 0

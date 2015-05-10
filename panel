@@ -1,0 +1,41 @@
+#! /bin/sh
+
+PANEL_FIFO=/tmp/panel-fifo
+PANEL_HEIGHT=24
+PANEL_FONT_FAMILY="-*-terminus-medium-r-normal-*-12-*-*-*-c-*-*-1"
+
+if [ $(pgrep -cx panel) -gt 1 ] ; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+bspc config top_padding $PANEL_HEIGHT
+
+rsep=`printf "\u2771"` 
+lsep=`printf "\u2770"` 
+
+while true
+do
+    mem=`free -h | awk '/Mem/{print $3}'`
+    td=`date +"%a %d %B $lsep %H:%M"`;
+    # 1448,2770
+    echo "S$lsep $mem $lsep $td" >> "$PANEL_FIFO" 
+
+    #battery info
+    acpi -ab | awk "{if(NR>1){print (\$3==\"on-line\"?\"B\":\"b\") \"$lsep \" perc}else{perc=\$4;}}" | sed 's/,//' >> "$PANEL_FIFO" 
+
+    sleep 1;
+done &
+bspc control --subscribe >> "$PANEL_FIFO" &
+xtitle -sf "T%s $rsep" >> "$PANEL_FIFO" &
+
+. panel_colors
+
+cat "$PANEL_FIFO" | panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" -F "$COLOR_FOREGROUND" -B "$COLOR_BACKGROUND" &
+
+wait
