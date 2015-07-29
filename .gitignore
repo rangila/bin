@@ -3,6 +3,7 @@
 *
 .*
 
+!git-reset-author.sh
 !.gitignore
 !fork
 !README.md
