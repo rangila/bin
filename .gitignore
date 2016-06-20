@@ -3,6 +3,8 @@
 *
 .*
 
+!merge.sh
+!diff.sh
 !git-reset-author.sh
 !.gitignore
 !fork
