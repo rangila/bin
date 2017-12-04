@@ -1,4 +1,3 @@
 #!/bin/sh
 
-urxvtc -cd $PWD
-
+nohup urxvt -cd $PWD &>/dev/null &
