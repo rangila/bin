@@ -15,3 +15,6 @@
 !panel
 !panel_bar
 !panel_colors
+!trash
+!test-multicast-client.sh 
+!test-multicast-server.sh

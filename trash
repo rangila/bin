@@ -1,0 +1,18 @@
+#!/bin/bash
+
+default_trash="$HOME/trash"
+
+if [ -d "$TRASH_FOLDER" ]; then
+    trash_folder=$TRASH_FOLDER
+else
+    trash_folder=$default_trash
+fi
+
+mv -v $@ $trash_folder
+if [ $? -eq 0 ]; then
+    printf "\e[32mMoved files to trash!\nRemember to clean $trash_folder\e[0m\n"
+else
+    printf "\e[31mCould not move files to trash!\nRemember to clean $trash_folder\e[0m\n"
+fi
+
+exit 0
